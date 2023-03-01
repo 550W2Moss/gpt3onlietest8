@@ -1,3 +1,4 @@
+import requests
 import streamlit as st
 
 # from core import recognize_from_mic,synthesize_to_speaker,respond,concatenate_me,concatenate_you,suggestion
@@ -14,7 +15,6 @@ import queue
 import urllib.request
 import numpy as np
 import time
-import requests
 
 # def speak():
 #     speech_config = speechsdk.SpeechConfig(subscription="5c05507933314a0caa980687fad5e2de", region="francecentral")
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 def recognize_from_mic(lang, azureapi):
     # Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
     # Remember to delete the brackets <> when pasting your key and region!
-    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="eastasia")
+    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="southeastasia")
     speech_config.speech_recognition_language = lang
     audio_config = speechsdk.audio.AudioConfig(filename="output.wav")
     speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
@@ -62,7 +62,7 @@ def autoplay_audio():
 def synthesize_to_speaker(text, lang, azureapi):
     # Find your key and resource region under the 'Keys and Endpoint' tab in your Speech resource in Azure Portal
     # Remember to delete the brackets <> when pasting your key and region!
-    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="eastasia")
+    speech_config = speechsdk.SpeechConfig(subscription=azureapi, region="southeastasia")
     speech_config.speech_synthesis_language = lang
     # In this sample we are using the default speaker
     # Learn how to customize your speaker using SSML in Azure Cognitive Services Speech documentation
@@ -90,6 +90,19 @@ def synthesize_to_speaker(text, lang, azureapi):
 #     return response.choices[0].text
 
 
+# def suggestion(conversation, mod, key):
+#     openai.api_key = key
+#     response = openai.Completion.create(
+#         model=mod,
+#         prompt=conversation,
+#         temperature=1,
+#         max_tokens=150,
+#         top_p=1,
+#         frequency_penalty=1,
+#         presence_penalty=0.1,
+#         stop=["ME:", "YOU:"])
+#     return response.choices[0].text
+
 def response_ai(conversation, mod):
     url = 'http://43.156.81.115:8000/respond'
     params = {'mod': 'text-davinci-003',
@@ -104,20 +117,6 @@ def response_ai(conversation, mod):
         # print(message)
     else:
         print(f'Request failed with status code {response.status_code}')
-
-
-# def suggestion(conversation, mod, key):
-#     openai.api_key = key
-#     response = openai.Completion.create(
-#         model=mod,
-#         prompt=conversation,
-#         temperature=1,
-#         max_tokens=150,
-#         top_p=1,
-#         frequency_penalty=1,
-#         presence_penalty=0.1,
-#         stop=["ME:", "YOU:"])
-#     return response.choices[0].text
 
 def suggestion_ai(conversation, mod):
     url = 'http://43.156.81.115:8000/respond'
@@ -225,7 +224,7 @@ def main():
 
     # stun server
 
-    st.header("Oral practice with AI")
+    st.header("阿拉丁 Moss 300 外教陪练")
 
     html_temp = """
                     <div style="background-color:{};padding:1px">
@@ -258,13 +257,13 @@ def main():
         This page is providing a new way of practice your oral with openai!
         If you like the app, 
 
-        # [Donate me!](https://drawingsword.com/post/donate-me/)
+        # [Donate me!]
 
-        please star source code:[github](https://github.com/tomzhu0225/oral_practice_web_dev)
+        please star source code:
 
-        follow me on bilibili [drawingsword](https://space.bilibili.com/64849811/)
+        follow me on bilibili
 
-        follow me on youtube [linear chu](https://www.youtube.com/channel/UCR2jqmzkrzdB_VUJ2ytospA)
+        follow me on youtube
 
         """)
         # st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"),unsafe_allow_html=True)
@@ -274,7 +273,7 @@ def main():
         # """)
         st.markdown(html_temp.format("rgba(55, 53, 47, 0.16)"), unsafe_allow_html=True)
         st.markdown("""
-        Made by [@Bowen ZHU](https://www.linkedin.com/in/bowen-zhu-52ba181b9/)
+        Made by 
         """,
                     unsafe_allow_html=True,
                     )
@@ -313,12 +312,12 @@ def main():
         st.markdown("""
     <style>
       .type1 {
-        background-color: green;
+        background-color: YellowGreen ;
         padding: 10px;
         border-radius: 10px;
       }
       .type2 {
-        background-color: darkblue;
+        background-color: LightSkyBlue;
         padding: 10px;
         border-radius: 10px;
       }
@@ -362,7 +361,6 @@ def app_sst_side():
             try:
                 audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
             except queue.Empty:
-
                 time.sleep(0.1)
                 status_indicator.write("No frame arrived.")
                 continue
